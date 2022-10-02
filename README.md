@@ -3,7 +3,7 @@ service-a
 service-b
 
 ## to run locally
-mvn compile quarkus:dev -DSERVICE_A_URL=http://localhost:8080 -DSERVICE_B_URL=http://localhost:8090 -Dquarkus.log.level=DEBUG
+mvn compile quarkus:dev -Dapp.version=v1.0.0 -DSERVICE_A_URL=http://localhost:8080 -DSERVICE_B_URL=http://localhost:8090 -Dquarkus.log.level=DEBUG
 
 # ------------ OpenShift image build
 Add OpenShift Maven extension:

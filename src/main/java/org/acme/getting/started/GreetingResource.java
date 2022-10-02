@@ -2,6 +2,7 @@ package org.acme.getting.started;
 
 import javax.enterprise.context.RequestScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.eclipse.microprofile.config.ConfigProvider;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,6 +16,10 @@ import org.acme.getting.started.client.ServiceBClient;
 @Path("/message")
 public class GreetingResource {
 
+    private static String HOSTNAME;
+
+    String appVersion = ConfigProvider.getConfig().getValue("app.version", String.class);
+
     @Inject
     @RestClient
     ServiceAClient serviceA;
@@ -26,7 +31,7 @@ public class GreetingResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getMessage() {
-        String msg = "Hello. Your message is: ";
+        String msg = "Hello. Your message is: (" + getIdentification() + "): ";
         String msgA=null, msgB=null;
 
         msgA = serviceA != null ? serviceA.getMessage() : "(unknown-A)";
@@ -34,4 +39,30 @@ public class GreetingResource {
 
         return msg + " " + msgA + " " + msgB;
     }
+
+    private String getIdentification(){
+        return appVersion + "; " + HOSTNAME;
+    }
+
+    private String getHostName(){
+        if(GreetingResource.HOSTNAME == null){
+            try{    
+                GreetingResource.HOSTNAME = System.getenv("HOSTNAME");
+                if(GreetingResource.HOSTNAME == null) 
+                    GreetingResource.HOSTNAME = System.getenv("COMPUTERNAME");  //Windows desktop name
+                
+                System.out.println("HOSTNAME=" + GreetingResource.HOSTNAME);
+                
+                //max 128 char
+                if(GreetingResource.HOSTNAME != null && GreetingResource.HOSTNAME.length() > 128){                    
+                    GreetingResource.HOSTNAME = GreetingResource.HOSTNAME.substring(0, 127);
+                }                
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        if(GreetingResource.HOSTNAME == null) GreetingResource.HOSTNAME = "/local PC/not hosted";
+        return GreetingResource.HOSTNAME;
+    }      
 }
