@@ -41,7 +41,7 @@ public class GreetingResource {
     }
 
     private String getIdentification(){
-        return appVersion + "; " + HOSTNAME;
+        return appVersion + "; " + getHostName();
     }
 
     private String getHostName(){
