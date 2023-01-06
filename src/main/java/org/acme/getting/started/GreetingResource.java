@@ -40,6 +40,13 @@ public class GreetingResource {
         return msg + " " + msgA + " " + msgB;
     }
 
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("health")
+    public String getHealth(){
+        return "ok - up and running";
+    }
+
     private String getIdentification(){
         return appVersion + "; " + getHostName();
     }
